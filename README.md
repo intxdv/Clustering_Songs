@@ -141,8 +141,12 @@ Proyek ini menggunakan Elbow Method dan Silhouette Score untuk menentukan jumlah
 ## 👥 Identitas Kelompok
 
 - **Lab:** Pembelajaran Mesin E2
-- **Anggota:**
-  - Syafiq Abiyyu Taqi (24060123120012)
+- **Anggota 1:**
+  - Nama: [Isi Nama Anggota 1]
+  - NIM: [Isi NIM Anggota 1]
+- **Anggota 2:**
+  - Nama: Syafiq Abiyyu Taqi
+  - NIM: 24060123120012
 
 ---
 
