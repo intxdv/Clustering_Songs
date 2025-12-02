@@ -142,8 +142,8 @@ Proyek ini menggunakan Elbow Method dan Silhouette Score untuk menentukan jumlah
 
 - **Lab:** Pembelajaran Mesin E2
 - **Anggota 1:**
-  - Nama: [Isi Nama Anggota 1]
-  - NIM: [Isi NIM Anggota 1]
+  - Nama: Sulhan Fuadi
+  - NIM: 24060123130115
 - **Anggota 2:**
   - Nama: Syafiq Abiyyu Taqi
   - NIM: 24060123120012
