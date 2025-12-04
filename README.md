@@ -8,12 +8,14 @@
 
 Proyek ini merupakan implementasi teknik **Unsupervised Learning** untuk mengelompokkan lagu-lagu berdasarkan fitur audio dari dataset Spotify. Proyek ini menggunakan pendekatan dengan fokus pada hasil yang **actionable** dan memiliki **nilai bisnis**, bukan hanya skor statistik tinggi.
 
-### 🎯 Highlights Versi Terbaru (v4 - Advanced):
+### 🎯 Highlights Versi Terbaru (v5 - Senior DS Level):
 - **Stratified Sampling** untuk menjaga proporsi genre minoritas
-- **Power Transform (Yeo-Johnson)** untuk mengatasi fitur skewed
-- **Perbandingan Statistical vs Business Optimum** pada K-Means
+- **Power Transform (Yeo-Johnson)** dengan analisis skewness (1.40 → 0.32)
+- **Data-Driven K Selection** menggunakan 3 metrik: Silhouette, Calinski-Harabasz, Davies-Bouldin
+- **Perbandingan Head-to-Head** K=2 (Statistical) vs K=5 (Business Optimal)
 - **PCA + DBSCAN** untuk mengatasi masalah "Giant Blob"
-- **Radar Chart & Cluster Profiling** yang actionable untuk industri musik
+- **Radar Chart Interaktif (Plotly)** & Cluster Profiling
+- **Critical Analysis** - evaluasi jujur kelebihan dan keterbatasan setiap model
 
 ---
 
@@ -39,8 +41,12 @@ Proyek ini merupakan implementasi teknik **Unsupervised Learning** untuk mengelo
 │   ├── 📓 [v3]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb
 │   └── 📊 hasil_clustering_musik.csv                           # Hasil clustering v3
 │
-├── 📓 [v4]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb  # ⭐ REKOMENDASI - Advanced Level
-└── 📊 hasil_clustering_musik_v4.csv                            # Hasil clustering v4 (20,000 lagu)
+├── 📁 [v4]_Music_Genre_Clustering_using_Spotify_Dataset/       # Versi Advanced
+│   ├── 📓 [v4]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb
+│   └── 📊 hasil_clustering_musik_v4.csv                        # Hasil clustering v4
+│
+├── 📓 [v5]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb  # ⭐ REKOMENDASI - Senior DS Level
+└── 📊 hasil_clustering_musik_v5.csv                            # Hasil clustering v5 (20,000 lagu)
 ```
 
 ---
@@ -115,16 +121,18 @@ pip install pandas numpy matplotlib seaborn plotly scikit-learn scipy
 
 Buka notebook menggunakan Jupyter Notebook, JupyterLab, atau VS Code:
 
-- `[v4]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb` ⭐ **REKOMENDASI** - Versi Advanced 
+- `[v5]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb` ⭐ **REKOMENDASI** - Senior DS Level
+- `[v4]_Music_Genre_Clustering_using_Spotify_Dataset/` - Versi Advanced
 - `[v3]_Music_Genre_Clustering_using_Spotify_Dataset/` - Versi dengan 4 algoritma clustering
+- `[v2]_Music_Genre_Clustering_using_Spotify_Dataset/` - Versi improved dengan export CSV
 - `[v1]_Music_Genre_Clustering_using_Spotify_Dataset/` - Versi basic dengan K-Means saja
 
 ---
 
-## 📈 Metodologi (Versi 4 - Advanced)
+## 📈 Metodologi (Versi 5 - Senior DS Level)
 
 ### 1. Data Loading & Stratified Sampling
-- Dataset: **114,000 lagu** dari **114 genre** berbeda
+- Dataset: **114,000 lagu** dari **114 genre** berbeda (perfectly balanced: 1,000 lagu/genre)
 - **Stratified Sampling** 20,000 lagu untuk menjaga proporsi genre minoritas
 - Tidak menggunakan random sampling biasa agar genre langka tidak hilang
 
@@ -137,22 +145,29 @@ Buka notebook menggunakan Jupyter Notebook, JupyterLab, atau VS Code:
 - **Power Transform (Yeo-Johnson)** untuk fitur skewed
   - Yeo-Johnson dapat menangani nilai negatif (seperti loudness)
   - Mendekatkan distribusi ke Gaussian (normal)
+  - **Rata-rata skewness: 1.40 → 0.32** (pengurangan 77%)
 - **StandardScaler** setelah transformasi
 - ⚠️ Mengapa penting? Algoritma berbasis jarak (K-Means) bekerja buruk pada data yang sangat miring
 
-### 4. K-Means Clustering: Statistical vs Business Optimum
+### 4. K-Means Clustering: Data-Driven K Selection
 
-| Pendekatan | K | Silhouette Score | Insight |
-|------------|---|------------------|---------|
-| **Statistical** | 2 | 0.2015 (tertinggi) | Terlalu umum, tidak actionable |
-| **Business** | 6 | 0.1593 | 6 micro-genres bermakna untuk industri |
+**Evaluasi K=2 hingga K=15** menggunakan 3 metrik:
+- **Silhouette Score** - Mengukur kohesi dan separasi cluster
+- **Calinski-Harabasz Index** - Rasio dispersi antar dan dalam cluster
+- **Davies-Bouldin Index** - Mengukur kemiripan antar cluster (lebih rendah = lebih baik)
 
-**Key Insight**: Silhouette Score tinggi ≠ clustering yang baik untuk bisnis!
+| Pendekatan | K | Silhouette Score | Penurunan dari K=2 | Insight |
+|------------|---|------------------|--------------------|---------|
+| **Statistical** | 2 | 0.2015 (tertinggi) | - | Terlalu umum, tidak actionable |
+| **Business** | 5 | 0.1625 | -3.9% | 5 micro-genres bermakna untuk industri |
+
+**Key Insight**: K=5 dipilih karena penurunan Silhouette hanya 3.9% dari K=2, namun memberikan 5 cluster yang actionable!
 
 ### 5. DBSCAN dengan PCA (Fixing the "Giant Blob")
-- ❌ **Tanpa PCA**: 1 cluster raksasa (96.6% data) + noise
+- ❌ **Tanpa PCA**: 1 cluster raksasa (98%+ data) sebagai noise
 - ✅ **Dengan PCA 3D**: Mereduksi dimensi sebelum DBSCAN
-- PCA menjelaskan **60.45%** varians dengan 3 komponen
+- PCA menjelaskan **60.5%** varians dengan 3 komponen
+- Parameter tuning: eps=0.35, min_samples=30 → 6 clusters, 20.4% noise
 
 ### 6. Cluster Profiling & Labeling
 - **Radar Chart** untuk visualisasi profil cluster
@@ -161,28 +176,26 @@ Buka notebook menggunakan Jupyter Notebook, JupyterLab, atau VS Code:
 
 ---
 
-## 📊 Hasil Clustering (Versi 4)
+## 📊 Hasil Clustering (Versi 5)
 
-### 6 Cluster Labels (K-Means Business K=6)
+### 5 Cluster Labels (K-Means Business K=5)
 
-| Cluster | Label | Top Genres | Karakteristik | Use Case |
-|---------|-------|------------|---------------|----------|
-| 0 | **High Energy / Instrumental** | Techno, Trance, Detroit Techno | Energy tinggi, Instrumentalness tinggi | Fokus, Workout elektronik |
-| 1 | **High Energy / Fast Tempo** | Metalcore, Heavy Metal, Hardstyle | Energy sangat tinggi, Tempo cepat | Gym, Headbang |
-| 2 | **High Energy Dance / Upbeat** | Comedy, Dancehall, J-Dance | Danceability tinggi, Speechiness tinggi | Party, Dance |
-| 3 | **Acoustic** | Cantopop, Jazz, Mandopop | Acousticness tinggi, Energy rendah | Relaksasi, Kafe |
-| 4 | **Low Energy / Acoustic / Instrumental** | New Age, Classical, Sleep, Ambient | Energy rendah, Acousticness & Instrumentalness tinggi | Tidur, Meditasi, Belajar |
-| 5 | **High Energy Dance / Upbeat** | Salsa, Forró, Disco, House | Valence tinggi, Energy tinggi | Party, Mood booster |
+| Cluster | Label | Karakteristik | Use Case |
+|---------|-------|---------------|----------|
+| 0 | **High-Energy / Fast / Live** | Energy tinggi, Tempo cepat, Liveness tinggi | Gym, Concert vibes |
+| 1 | **Acoustic / Slow** | Acousticness tinggi, Tempo lambat | Relaksasi, Kafe, Belajar |
+| 2 | **High-Energy / Instrumental / Melancholic** | Energy tinggi, Instrumentalness tinggi, Valence rendah | Fokus, Workout elektronik |
+| 3 | **Calm / Acoustic / Instrumental** | Energy rendah, Acousticness & Instrumentalness tinggi | Tidur, Meditasi, Ambient |
+| 4 | **Dance-Party / Vocal-Heavy** | Danceability tinggi, Valence tinggi, Speechiness tinggi | Party, Mood booster |
 
 ### Distribusi Cluster
 
 ```
-Cluster 0 (High Energy / Instrumental):     2,545 songs (12.7%)
-Cluster 1 (High Energy / Fast Tempo):       3,818 songs (19.1%)
-Cluster 2 (High Energy Dance / Upbeat):     2,882 songs (14.4%)
-Cluster 3 (Acoustic):                       4,409 songs (22.0%)
-Cluster 4 (Low Energy / Instrumental):      1,754 songs (8.8%)
-Cluster 5 (High Energy Dance / Upbeat):     4,592 songs (23.0%)
+Cluster 0 (High-Energy / Fast / Live):              5,094 songs (25.5%)
+Cluster 1 (Acoustic / Slow):                        5,068 songs (25.3%)
+Cluster 2 (High-Energy / Instrumental / Melancholic): 2,604 songs (13.0%)
+Cluster 3 (Calm / Acoustic / Instrumental):         1,796 songs (9.0%)
+Cluster 4 (Dance-Party / Vocal-Heavy):              5,438 songs (27.2%)
 ```
 
 ### Visualisasi yang Tersedia
@@ -208,9 +221,9 @@ Cluster 5 (High Energy Dance / Upbeat):     4,592 songs (23.0%)
 
 ### Business vs Statistical Trade-off
 
-| Aspek | Statistical Optimal (K=2) | Business Optimal (K=6) |
+| Aspek | Statistical Optimal (K=2) | Business Optimal (K=5) |
 |-------|---------------------------|------------------------|
-| Silhouette Score | 0.2015 (lebih tinggi) | 0.1593 |
+| Silhouette Score | 0.2015 (lebih tinggi) | 0.1625 (-3.9%) |
 | Interpretabilitas | Rendah | **Tinggi** |
 | Actionability | Rendah | **Tinggi** |
 | Nilai Bisnis | Rendah | **Tinggi** |
