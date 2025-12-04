@@ -6,7 +6,14 @@
 
 ## 📋 Deskripsi Proyek
 
-Proyek ini merupakan implementasi teknik **Unsupervised Learning** untuk mengelompokkan lagu-lagu berdasarkan fitur audio dari dataset Spotify. Dengan menggunakan **4 algoritma clustering berbeda** (K-Means, DBSCAN, Hierarchical Clustering, dan Gaussian Mixture Model), proyek ini bertujuan untuk menemukan pola tersembunyi dan mengelompokkan lagu-lagu yang memiliki karakteristik audio serupa, serta membandingkan performa masing-masing algoritma.
+Proyek ini merupakan implementasi teknik **Unsupervised Learning** untuk mengelompokkan lagu-lagu berdasarkan fitur audio dari dataset Spotify. Proyek ini menggunakan pendekatan dengan fokus pada hasil yang **actionable** dan memiliki **nilai bisnis**, bukan hanya skor statistik tinggi.
+
+### 🎯 Highlights Versi Terbaru (v4 - Advanced):
+- **Stratified Sampling** untuk menjaga proporsi genre minoritas
+- **Power Transform (Yeo-Johnson)** untuk mengatasi fitur skewed
+- **Perbandingan Statistical vs Business Optimum** pada K-Means
+- **PCA + DBSCAN** untuk mengatasi masalah "Giant Blob"
+- **Radar Chart & Cluster Profiling** yang actionable untuk industri musik
 
 ---
 
@@ -16,21 +23,24 @@ Proyek ini merupakan implementasi teknik **Unsupervised Learning** untuk mengelo
 📦 Clustering_Songs
 ├── 📄 README.md                                                # Dokumentasi proyek
 ├── 📓 [referensi-notebook] eda-and-clustering-songs.ipynb      # Notebook referensi dari Kaggle
-├── 📊 dataset.csv                                              # Dataset Spotify Tracks
+├── 📊 dataset.csv                                              # Dataset Spotify Tracks (114,000 lagu)
 │
-├── 📁 [v0]_Music_Genre_Clustering_using_Spotify_Dataset/       # Versi awal
+├── 📁 [v0]_Music_Genre_Clustering_using_Spotify_Dataset/       # Versi awal (eksplorasi)
 │   └── 📓 [v0]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb
 │
-├── 📁 [v1]_Music_Genre_Clustering_using_Spotify_Dataset/       # Versi dengan K-Means
+├── 📁 [v1]_Music_Genre_Clustering_using_Spotify_Dataset/       # Versi dengan K-Means dasar
 │   └── 📓 [v1]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb
 │
 ├── 📁 [v2]_Music_Genre_Clustering_using_Spotify_Dataset/       # Versi improved
 │   ├── 📓 [v2]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb
 │   └── 📊 hasil_clustering_lagu.csv                            # Hasil clustering v2
 │
-└── 📁 [v3]_Music_Genre_Clustering_using_Spotify_Dataset/       # ⭐ Versi lengkap (4 algoritma)
-    ├── 📓 [v3]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb
-    └── 📊 hasil_clustering_musik.csv                           # Hasil clustering v3
+├── 📁 [v3]_Music_Genre_Clustering_using_Spotify_Dataset/       # Versi 4 algoritma
+│   ├── 📓 [v3]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb
+│   └── 📊 hasil_clustering_musik.csv                           # Hasil clustering v3
+│
+├── 📓 [v4]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb  # ⭐ REKOMENDASI - Advanced Level
+└── 📊 hasil_clustering_musik_v4.csv                            # Hasil clustering v4 (20,000 lagu)
 ```
 
 ---
@@ -72,14 +82,15 @@ Dataset yang digunakan adalah **Spotify Tracks Dataset** yang berisi fitur audio
 - **Pandas** - Manipulasi dan analisis data
 - **NumPy** - Operasi numerik
 - **Matplotlib & Seaborn** - Visualisasi data statis
-- **Plotly** - Visualisasi interaktif (2D, 3D, Parallel Coordinates, Sunburst)
-- **SciPy** - Dendrogram untuk Hierarchical Clustering
+- **Plotly** - Visualisasi interaktif (2D, 3D, Parallel Coordinates, Sunburst, Radar Chart)
+- **SciPy** - Dendrogram untuk Hierarchical Clustering, Statistik dan analisis skewness
 - **Scikit-learn** - Algoritma Machine Learning:
   - K-Means Clustering
   - DBSCAN (Density-Based Spatial Clustering)
   - Agglomerative Clustering (Hierarchical)
   - Gaussian Mixture Model (GMM)
   - PCA (Principal Component Analysis)
+  - PowerTransformer (Yeo-Johnson)
   - StandardScaler
   - Metrik Evaluasi (Silhouette, Calinski-Harabasz, Davies-Bouldin)
 
@@ -104,88 +115,112 @@ pip install pandas numpy matplotlib seaborn plotly scikit-learn scipy
 
 Buka notebook menggunakan Jupyter Notebook, JupyterLab, atau VS Code:
 
-- `[v3]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb` ⭐ **REKOMENDASI** - Versi lengkap dengan 4 algoritma
-- `[v1]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb` - Versi dengan K-Means saja
+- `[v4]_Music_Genre_Clustering_using_Spotify_Dataset.ipynb` ⭐ **REKOMENDASI** - Versi Advanced 
+- `[v3]_Music_Genre_Clustering_using_Spotify_Dataset/` - Versi dengan 4 algoritma clustering
+- `[v1]_Music_Genre_Clustering_using_Spotify_Dataset/` - Versi basic dengan K-Means saja
 
 ---
 
-## 📈 Metodologi
+## 📈 Metodologi (Versi 4 - Advanced)
 
-### 1. Exploratory Data Analysis (EDA)
-- Analisis statistik deskriptif
-- Visualisasi distribusi fitur audio (histogram, box plot)
+### 1. Data Loading & Stratified Sampling
+- Dataset: **114,000 lagu** dari **114 genre** berbeda
+- **Stratified Sampling** 20,000 lagu untuk menjaga proporsi genre minoritas
+- Tidak menggunakan random sampling biasa agar genre langka tidak hilang
+
+### 2. Exploratory Data Analysis (EDA)
+- Analisis distribusi fitur audio dengan **skewness analysis**
 - Correlation heatmap untuk melihat hubungan antar fitur
-- Pairplot untuk visualisasi multi-dimensi
+- Identifikasi **4 fitur highly skewed**: `loudness`, `speechiness`, `instrumentalness`, `liveness`
 
-### 2. Data Preprocessing
-- Pengecekan missing values dan duplikat
-- Seleksi 9 fitur audio untuk clustering:
-  - `danceability`, `energy`, `loudness`, `speechiness`
-  - `acousticness`, `instrumentalness`, `liveness`, `valence`, `tempo`
-- Sampling data (20,000 lagu) untuk efisiensi komputasi
-- Standardisasi data menggunakan StandardScaler
+### 3. Advanced Preprocessing (Crucial Step)
+- **Power Transform (Yeo-Johnson)** untuk fitur skewed
+  - Yeo-Johnson dapat menangani nilai negatif (seperti loudness)
+  - Mendekatkan distribusi ke Gaussian (normal)
+- **StandardScaler** setelah transformasi
+- ⚠️ Mengapa penting? Algoritma berbasis jarak (K-Means) bekerja buruk pada data yang sangat miring
 
-### 3. Dimensionality Reduction
-- PCA (Principal Component Analysis) untuk visualisasi 2D dan 3D
-- Analisis explained variance
-- Loading factors untuk interpretasi komponen
+### 4. K-Means Clustering: Statistical vs Business Optimum
 
-### 4. Clustering dengan 4 Algoritma
+| Pendekatan | K | Silhouette Score | Insight |
+|------------|---|------------------|---------|
+| **Statistical** | 2 | 0.2015 (tertinggi) | Terlalu umum, tidak actionable |
+| **Business** | 6 | 0.1593 | 6 micro-genres bermakna untuk industri |
 
-| Algoritma | Cara Kerja | Kelebihan | Kekurangan |
-|-----------|------------|-----------|------------|
-| **K-Means** | Membagi data ke K cluster dengan centroid | Cepat, mudah dipahami | Harus tentukan K, sensitif outlier |
-| **DBSCAN** | Mengelompokkan data berdasarkan kepadatan | Deteksi outlier, bentuk bebas | Sulit di dimensi tinggi |
-| **Hierarchical** | Membuat pohon cluster (dendrogram) | Tidak perlu tentukan K di awal | Lambat untuk data besar |
-| **GMM** | Menggunakan distribusi Gaussian | Soft clustering, fleksibel | Lebih kompleks |
+**Key Insight**: Silhouette Score tinggi ≠ clustering yang baik untuk bisnis!
 
-### 5. Evaluasi & Perbandingan
-- **Silhouette Score**: Mengukur kualitas cluster (-1 s/d 1, semakin tinggi semakin baik)
-- **Calinski-Harabasz Score**: Rasio dispersi antar/dalam cluster (semakin tinggi semakin baik)
-- **Davies-Bouldin Score**: Kemiripan antar cluster (semakin rendah semakin baik)
+### 5. DBSCAN dengan PCA (Fixing the "Giant Blob")
+- ❌ **Tanpa PCA**: 1 cluster raksasa (96.6% data) + noise
+- ✅ **Dengan PCA 3D**: Mereduksi dimensi sebelum DBSCAN
+- PCA menjelaskan **60.45%** varians dengan 3 komponen
 
-### 6. Analisis Hasil
-- Profil karakteristik setiap cluster (radar chart, heatmap)
-- Distribusi genre asli per cluster
-- Contoh lagu dari setiap cluster
-- Visualisasi interaktif dengan Plotly
+### 6. Cluster Profiling & Labeling
+- **Radar Chart** untuk visualisasi profil cluster
+- **Automatic labeling** berdasarkan fitur dominan
+- Analisis distribusi genre asli per cluster
 
 ---
 
-## 📊 Hasil Clustering
+## 📊 Hasil Clustering (Versi 4)
 
-### Perbandingan Performa Algoritma
+### 6 Cluster Labels (K-Means Business K=6)
 
-| Algoritma | Silhouette ↑ | Calinski-Harabasz ↑ | Davies-Bouldin ↓ | Jumlah Cluster |
-|-----------|--------------|---------------------|------------------|----------------|
-| K-Means | ~0.15-0.20 | ~3000-4000 | ~1.5-2.0 | 5 |
-| DBSCAN | Varies | Varies | Varies | Auto-detected |
-| Hierarchical | ~0.15-0.20 | ~3000-4000 | ~1.5-2.0 | 5 |
-| GMM | ~0.15-0.20 | ~3000-4000 | ~1.5-2.0 | 5 |
+| Cluster | Label | Top Genres | Karakteristik | Use Case |
+|---------|-------|------------|---------------|----------|
+| 0 | **High Energy / Instrumental** | Techno, Trance, Detroit Techno | Energy tinggi, Instrumentalness tinggi | Fokus, Workout elektronik |
+| 1 | **High Energy / Fast Tempo** | Metalcore, Heavy Metal, Hardstyle | Energy sangat tinggi, Tempo cepat | Gym, Headbang |
+| 2 | **High Energy Dance / Upbeat** | Comedy, Dancehall, J-Dance | Danceability tinggi, Speechiness tinggi | Party, Dance |
+| 3 | **Acoustic** | Cantopop, Jazz, Mandopop | Acousticness tinggi, Energy rendah | Relaksasi, Kafe |
+| 4 | **Low Energy / Acoustic / Instrumental** | New Age, Classical, Sleep, Ambient | Energy rendah, Acousticness & Instrumentalness tinggi | Tidur, Meditasi, Belajar |
+| 5 | **High Energy Dance / Upbeat** | Salsa, Forró, Disco, House | Valence tinggi, Energy tinggi | Party, Mood booster |
 
-*↑ = Semakin tinggi semakin baik, ↓ = Semakin rendah semakin baik*
+### Distribusi Cluster
 
-### Karakteristik Cluster (Contoh dari K-Means)
-
-| Cluster | Karakteristik | Cocok Untuk |
-|---------|---------------|-------------|
-| 0 | Energy tinggi, Danceability tinggi | Workout, Party |
-| 1 | Acousticness tinggi, Energy rendah | Relaksasi, Tidur |
-| 2 | Valence tinggi, Tempo cepat | Mood booster |
-| 3 | Instrumentalness tinggi | Fokus, Belajar |
-| 4 | Speechiness tinggi | Podcast-like, Rap |
-
-*Catatan: Karakteristik cluster dapat bervariasi berdasarkan hasil optimasi. Silakan jalankan notebook untuk melihat hasil lengkap.*
+```
+Cluster 0 (High Energy / Instrumental):     2,545 songs (12.7%)
+Cluster 1 (High Energy / Fast Tempo):       3,818 songs (19.1%)
+Cluster 2 (High Energy Dance / Upbeat):     2,882 songs (14.4%)
+Cluster 3 (Acoustic):                       4,409 songs (22.0%)
+Cluster 4 (Low Energy / Instrumental):      1,754 songs (8.8%)
+Cluster 5 (High Energy Dance / Upbeat):     4,592 songs (23.0%)
+```
 
 ### Visualisasi yang Tersedia
 
-- 📊 Scatter plot 2D (PCA)
-- 🎯 Scatter plot 3D interaktif (Plotly)
-- 📈 Radar chart profil cluster
+- 📊 Histogram distribusi fitur (Before & After Transform)
+- 🔗 Correlation Heatmap
+- 📈 Elbow Method & Silhouette Score Plot
+- 🎯 Scatter plot 2D (PCA) - Statistical vs Business K
+- 📡 3D Interactive Plot (DBSCAN results)
+- 🎭 Radar Chart profil cluster
 - 🔥 Heatmap karakteristik cluster
-- 🌳 Dendrogram (Hierarchical)
-- 🌞 Sunburst chart (Genre per Cluster)
-- 📉 Parallel coordinates plot
+- 📊 Silhouette Analysis per cluster
+
+---
+
+## 💡 Key Insights & Lessons Learned
+
+### Mengapa Silhouette Score Bisa Menipu?
+
+1. **DBSCAN Silhouette Inflation**: Noise points dikeluarkan dari perhitungan, sehingga cluster yang tersisa terlihat "perfect"
+2. **K-Means dengan K kecil**: K=2 sering menghasilkan skor tertinggi, tapi pemisahan terlalu umum (misal: "musik cepat" vs "musik lambat")
+3. **Trade-off**: Separasi matematis tinggi ≠ Segmentasi yang berguna untuk bisnis
+
+### Business vs Statistical Trade-off
+
+| Aspek | Statistical Optimal (K=2) | Business Optimal (K=6) |
+|-------|---------------------------|------------------------|
+| Silhouette Score | 0.2015 (lebih tinggi) | 0.1593 |
+| Interpretabilitas | Rendah | **Tinggi** |
+| Actionability | Rendah | **Tinggi** |
+| Nilai Bisnis | Rendah | **Tinggi** |
+
+### Aplikasi Praktis untuk Spotify/Music Platform
+
+- 🎧 **Playlist Generation** - Otomatis membuat playlist berdasarkan cluster
+- 🔍 **Music Discovery** - Rekomendasi lagu dari cluster yang sama
+- 📈 **User Segmentation** - Memahami preferensi pengguna berdasarkan cluster favorit
+- 🎯 **Targeted Marketing** - Kampanye iklan berdasarkan micro-genre preference
 
 ---
 
@@ -209,7 +244,10 @@ Buka notebook menggunakan Jupyter Notebook, JupyterLab, atau VS Code:
 - [DBSCAN Clustering](https://scikit-learn.org/stable/modules/clustering.html#dbscan)
 - [Hierarchical Clustering](https://scikit-learn.org/stable/modules/clustering.html#hierarchical-clustering)
 - [Gaussian Mixture Models](https://scikit-learn.org/stable/modules/mixture.html)
+- [Power Transformer (Yeo-Johnson)](https://scikit-learn.org/stable/modules/preprocessing.html#mapping-to-a-gaussian-distribution)
+- [PCA - Principal Component Analysis](https://scikit-learn.org/stable/modules/decomposition.html#pca)
 - [Plotly Python Documentation](https://plotly.com/python/)
+- [Silhouette Score Interpretation](https://scikit-learn.org/stable/modules/clustering.html#silhouette-coefficient)
 
 ---
 
