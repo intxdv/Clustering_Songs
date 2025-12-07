@@ -10,13 +10,13 @@ I'll create markdown cells that provide:
 Let me show you the enhanced markdown content you can add to your v7 notebook:
 
 ````markdown
-# 🎵 Segmentasi Musik Spotify Berbasis Audio Features
+# Segmentasi Musik Spotify Berbasis Audio Features
 
 ### Proyek Pembelajaran Mesin - Unsupervised Learning (Clustering)
 
 ---
 
-## 📋 Deskripsi Dataset
+## Deskripsi Dataset
 
 ### Informasi Umum Dataset
 
@@ -46,31 +46,31 @@ Dataset ini memiliki 2 kategori fitur utama:
 
 | Fitur                | Rentang    | Deskripsi                                 | Relevansi Clustering                     |
 | -------------------- | ---------- | ----------------------------------------- | ---------------------------------------- |
-| **danceability**     | 0.0 - 1.0  | Seberapa cocok lagu untuk menari          | ⭐⭐⭐ Penting untuk segmentasi mood     |
-| **energy**           | 0.0 - 1.0  | Intensitas dan aktivitas lagu             | ⭐⭐⭐ Membedakan lagu tenang vs energik |
-| **loudness**         | -60 - 0 dB | Kekuatan suara rata-rata                  | ⭐⭐ Korelasi dengan energy              |
-| **speechiness**      | 0.0 - 1.0  | Kehadiran kata-kata yang diucapkan        | ⭐⭐⭐ Membedakan musik vs podcast       |
-| **acousticness**     | 0.0 - 1.0  | Tingkat akustik (non-elektronik)          | ⭐⭐⭐ Membedakan akustik vs elektronik  |
-| **instrumentalness** | 0.0 - 1.0  | Tingkat instrumental (tanpa vokal)        | ⭐⭐⭐ Membedakan instrumental vs vokal  |
-| **liveness**         | 0.0 - 1.0  | Probabilitas performa live                | ⭐⭐ Deteksi rekaman live                |
-| **valence**          | 0.0 - 1.0  | Mood positif (bahagia) vs negatif (sedih) | ⭐⭐⭐ Penting untuk mood clustering     |
-| **tempo**            | BPM        | Kecepatan lagu dalam beats per minute     | ⭐⭐ Membedakan lagu cepat vs lambat     |
-| **duration_ms**      | ms         | Durasi lagu dalam milidetik               | ⭐ Fitur sekunder                        |
+| **danceability**     | 0.0 - 1.0  | Seberapa cocok lagu untuk menari          | [PENTING] Segmentasi mood     |
+| **energy**           | 0.0 - 1.0  | Intensitas dan aktivitas lagu             | [PENTING] Membedakan lagu tenang vs energik |
+| **loudness**         | -60 - 0 dB | Kekuatan suara rata-rata                  | [MODERATE] Korelasi dengan energy              |
+| **speechiness**      | 0.0 - 1.0  | Kehadiran kata-kata yang diucapkan        | [PENTING] Membedakan musik vs podcast       |
+| **acousticness**     | 0.0 - 1.0  | Tingkat akustik (non-elektronik)          | [PENTING] Membedakan akustik vs elektronik  |
+| **instrumentalness** | 0.0 - 1.0  | Tingkat instrumental (tanpa vokal)        | [PENTING] Membedakan instrumental vs vokal  |
+| **liveness**         | 0.0 - 1.0  | Probabilitas performa live                | [MODERATE] Deteksi rekaman live                |
+| **valence**          | 0.0 - 1.0  | Mood positif (bahagia) vs negatif (sedih) | [PENTING] Mood clustering     |
+| **tempo**            | BPM        | Kecepatan lagu dalam beats per minute     | [MODERATE] Membedakan lagu cepat vs lambat     |
+| **duration_ms**      | ms         | Durasi lagu dalam milidetik               | [MINOR] Fitur sekunder                        |
 
 ### Alasan Pemilihan Dataset
 
-✅ **Relevan dengan Unsupervised Learning:**
+**[+] Relevan dengan Unsupervised Learning:**
 
 - Fitur audio bersifat **continuous dan numeric** → cocok untuk clustering
 - Tidak memerlukan label untuk training (genre hanya untuk validasi)
 - Pola-pola tersembunyi dalam karakteristik audio dapat ditemukan
 
-✅ **Ukuran Dataset Memadai:**
+**[+] Ukuran Dataset Memadai:**
 
 - 114K+ records → cukup besar untuk generalisasi
 - Variasi genre yang beragam → clustering lebih challenging
 
-✅ **Aplikasi Praktis:**
+**[+] Aplikasi Praktis:**
 
 - Dapat digunakan untuk sistem rekomendasi musik
 - Auto-playlist generation berdasarkan "mood"
@@ -78,15 +78,15 @@ Dataset ini memiliki 2 kategori fitur utama:
 
 ---
 
-## 🎯 Tujuan Proyek
+## Tujuan Proyek
 
 ### Tujuan Utama
 
 Membangun model **unsupervised learning (clustering)** untuk mengelompokkan lagu-lagu Spotify berdasarkan kesamaan karakteristik audio, sehingga dapat:
 
-1. ✅ Menemukan segmen musik yang memiliki karakteristik serupa
-2. ✅ Memberikan alternatif kategorisasi yang lebih objektif dibanding genre tradisional
-3. ✅ Membangun foundation untuk sistem rekomendasi musik
+1. Menemukan segmen musik yang memiliki karakteristik serupa
+2. Memberikan alternatif kategorisasi yang lebih objektif dibanding genre tradisional
+3. Membangun foundation untuk sistem rekomendasi musik
 
 ### Pertanyaan Riset
 
@@ -96,7 +96,7 @@ Membangun model **unsupervised learning (clustering)** untuk mengelompokkan lagu
 
 ---
 
-## 🔬 Metodologi
+## Metodologi
 
 ### Algoritma yang Dipilih: K-Means Clustering
 
@@ -104,55 +104,55 @@ Membangun model **unsupervised learning (clustering)** untuk mengelompokkan lagu
 
 | Kriteria             | Penjelasan                                            | Alternatif yang Tidak Dipilih          |
 | -------------------- | ----------------------------------------------------- | -------------------------------------- |
-| **Efisiensi**        | Kompleksitas O(N×K×I×D), sangat cepat untuk 114K data | ❌ Hierarchical (O(N²)) terlalu lambat |
-| **Scalability**      | Mudah di-scale untuk jutaan lagu                      | ❌ DBSCAN sulit tuning epsilon         |
-| **Interpretability** | Centroid = profil "rata-rata" musik di cluster        | ✅ Mudah dijelaskan ke non-teknis      |
-| **Convergence**      | Dijamin konvergen ke local minimum                    | ✅ Deterministik dengan random_state   |
+| **Efisiensi**        | Kompleksitas O(N×K×I×D), sangat cepat untuk 114K data | [-] Hierarchical (O(N²)) terlalu lambat |
+| **Scalability**      | Mudah di-scale untuk jutaan lagu                      | [-] DBSCAN sulit tuning epsilon         |
+| **Interpretability** | Centroid = profil "rata-rata" musik di cluster        | [+] Mudah dijelaskan ke non-teknis      |
+| **Convergence**      | Dijamin konvergen ke local minimum                    | [+] Deterministik dengan random_state   |
 
 **Trade-off yang Dipahami:**
 
-- ⚠️ Sensitif terhadap outlier → diatasi dengan **scaling & PCA**
-- ⚠️ Asumsi cluster spherical → cocok dengan data audio yang terdistribusi normal
-- ⚠️ Perlu tentukan K di awal → diatasi dengan **Composite Score method**
+- [!] Sensitif terhadap outlier → diatasi dengan **scaling & PCA**
+- [!] Asumsi cluster spherical → cocok dengan data audio yang terdistribusi normal
+- [!] Perlu tentukan K di awal → diatasi dengan **Composite Score method**
 
 ---
 
-## 📊 Tahapan Analisis (Sesuai Assignment Requirements)
+## Tahapan Analisis (Sesuai Assignment Requirements)
 
 Proyek ini mengikuti tahapan standar machine learning pipeline dengan penekanan pada dokumentasi setiap langkah:
 
-### ✅ **1. Deskripsi Dataset**
+### [TAHAP 1] Deskripsi Dataset
 
 - Load data dari Kaggle
 - Memahami struktur dan fitur dataset
 - **Alasan:** Wajib memahami data sebelum preprocessing
 
-### ✅ **2. Simple EDA (Exploratory Data Analysis)**
+### [TAHAP 2] Simple EDA (Exploratory Data Analysis)
 
 - Distribusi genre → cek balance dataset
 - Distribusi fitur audio → deteksi skewness
 - Korelasi antar fitur → deteksi multikolinearitas
 - **Alasan:** Menentukan strategi preprocessing yang tepat
 
-### ✅ **3. Preprocessing**
+### [TAHAP 3] Preprocessing
 
 - PowerTransformer (Yeo-Johnson) → normalisasi distribusi
 - StandardScaler → scaling fitur
 - **Alasan:** K-Means berbasis jarak Euclidean, butuh data ter-scale dan terdistribusi normal
 
-### ✅ **4. Dimensionality Reduction (PCA)**
+### [TAHAP 4] Dimensionality Reduction (PCA)
 
 - Reduksi dimensi dari 10+ fitur → komponen utama
 - Target: pertahankan 80%+ variance
 - **Alasan:** Mengurangi noise, mempercepat clustering, mengatasi multikolinearitas
 
-### ✅ **5. Modelling Cluster**
+### [TAHAP 5] Modelling Cluster
 
 - Pencarian K optimal dengan Composite Score
 - Training K-Means final pada full dataset
 - **Alasan:** K optimal seimbangkan metrik matematis & business value
 
-### ✅ **6. Post-Clustering Visualization & Analysis**
+### [TAHAP 6] Post-Clustering Visualization & Analysis
 
 - Profil cluster (Radar Chart)
 - Visualisasi sebaran (t-SNE, PCA)
@@ -161,7 +161,7 @@ Proyek ini mengikuti tahapan standar machine learning pipeline dengan penekanan 
 
 ---
 
-## 🛠️ Tools & Library yang Digunakan
+## Tools & Library yang Digunakan
 
 ```python
 # Data Manipulation
@@ -187,15 +187,15 @@ sklearn.metrics: silhouette_score, calinski_harabasz_score, davies_bouldin_score
 
 ---
 
-# 📂 BAGIAN 1: Data Loading & Initial Exploration
+# BAGIAN 1: Data Loading & Initial Exploration
 
 ## Alasan Langkah Ini:
 
 Sebelum melakukan analisis apapun, kita harus:
 
-1. ✅ Memastikan data berhasil dimuat
-2. ✅ Memahami struktur dataset (baris, kolom, tipe data)
-3. ✅ Mengidentifikasi masalah awal (missing values, duplikat)
+1. Memastikan data berhasil dimuat
+2. Memahami struktur dataset (baris, kolom, tipe data)
+3. Mengidentifikasi masalah awal (missing values, duplikat)
 
 **Prinsip:** "Garbage in, garbage out" - data berkualitas buruk = hasil buruk
 
@@ -231,14 +231,14 @@ Sebelum melakukan analisis apapun, kita harus:
 
 ### Alasan Menggunakan kagglehub:
 
-- ✅ Otomatis download versi terbaru dataset
-- ✅ Tidak perlu manual download & upload
-- ✅ Reproducible - siapa pun bisa jalankan kode yang sama
+- [+] Otomatis download versi terbaru dataset
+- [+] Tidak perlu manual download & upload
+- [+] Reproducible - siapa pun bisa jalankan kode yang sama
 
 ### Alternatif yang Tidak Dipilih:
 
-- ❌ Manual download → tidak reproducible
-- ❌ Upload ke Google Drive → dependency eksternal
+- [-] Manual download → tidak reproducible
+- [-] Upload ke Google Drive → dependency eksternal
 
 ---
 
@@ -278,15 +278,15 @@ df.duplicated(subset=['track_id'])
 
 ---
 
-# 📊 BAGIAN 2: Exploratory Data Analysis (EDA)
+# BAGIAN 2: Exploratory Data Analysis (EDA)
 
 ## Alasan Tahap EDA:
 
 EDA adalah tahap **KRITIS** sebelum modelling karena:
 
-1. ✅ Memahami karakteristik data → menentukan preprocessing yang tepat
-2. ✅ Menemukan insight awal → hipotesis cluster yang mungkin terbentuk
-3. ✅ Deteksi anomali → menentukan apakah perlu handling khusus
+1. Memahami karakteristik data → menentukan preprocessing yang tepat
+2. Menemukan insight awal → hipotesis cluster yang mungkin terbentuk
+3. Deteksi anomali → menentukan apakah perlu handling khusus
 
 **Quote:** "Exploratory data analysis can never be the whole story, but nothing else can serve as the foundation stone" - John Tukey
 
@@ -306,12 +306,12 @@ Meskipun clustering **tidak menggunakan label genre**, kita perlu tahu:
 
 ```
 Jika distribusi genre RELATIF SEIMBANG:
-✅ Dataset representatif untuk berbagai jenis musik
-✅ Clustering tidak akan bias ke genre tertentu
+[+] Dataset representatif untuk berbagai jenis musik
+[+] Clustering tidak akan bias ke genre tertentu
 
 Jika SANGAT IMBALANCED (1 genre 80%):
-⚠️ Hasil clustering mungkin didominasi genre mayoritas
-⚠️ Perlu stratified sampling saat pencarian K optimal
+[!] Hasil clustering mungkin didominasi genre mayoritas
+[!] Perlu stratified sampling saat pencarian K optimal
 ```
 
 ### Visualisasi Top 20 Genre:
